@@ -1,0 +1,42 @@
+ 
+name: Build nuitka
+
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ${{ matrix.os }}
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v1
+
+      - name : Install python
+        uses: actions/setup-python@v2.2.2
+        with:
+          python-version: '3.x'
+      - name: Install howdoi,PySimpleGUI and outdated
+        run : pip install howdoi PySimpleGUI outdated
+
+      - name: run build.py
+        run : python build.py
+
+      - name : Release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+
+      # - name: Build/release Electron app

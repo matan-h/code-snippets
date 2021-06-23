@@ -3,6 +3,12 @@ import os
 import howdoi.howdoi as howdoi_base
 import importlib
 
+import subprocess
+import sys
+
+from outdated import check_outdated
+import PySimpleGUI as sg
+
 
 def howdoi(query: str, num_answers: int = 1, search_engine='duckduckgo', all_answer: bool = True):
     importlib.reload(howdoi_base)
@@ -33,3 +39,12 @@ def howdoi(query: str, num_answers: int = 1, search_engine='duckduckgo', all_ans
         except json.JSONDecodeError:
             return {'error': result}  # (Sorry, couldn't find any help with that topic)
     return result
+
+
+def check_for_howdoi_update():
+    is_outdated, latest_version = check_outdated("howdoi", howdoi_base.__version__)
+    if is_outdated:
+        if sg.popup_ok_cancel(
+                f"do you want to install a new version of howdoi library ({howdoi_base.__version__} -> {latest_version}). the search may don't work on outdated version",
+                title="new version of howdoi") == "OK":
+            subprocess.check_call([sys.executable, "-m", "pip", "install", "-U", "howdoi"])

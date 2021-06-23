@@ -7,36 +7,30 @@ import PySimpleGUI as sg
 from howdoi.howdoi import SUPPORTED_SEARCH_ENGINES
 
 import difflib
-import datalib
-from util import howdoi
+from . import reporter
+from . import datalib
+from .util import howdoi, check_for_howdoi_update
 import sys
 
-is_nuitka = "__compiled__" in globals()
 
-
-def exc(*args, **kwargs):
-    if is_nuitka:
-        name = os.path.dirname(sys.argv[0])
-    else:
-        try:
-            name = __file__
-        except NameError:
-            name = sys.executable
-    if not os.path.isdir(os.path.dirname(name)):
-        name = os.path.dirname(name)
-    f_name = os.path.join(os.path.dirname(name), 'error.txt')
+def exc(cls, value, tb):
+    if issubclass(cls, KeyboardInterrupt):  # Ignore Ctrl + C.
+        sys.__excepthook__(cls, value, tb)
+        return
+    f_name = os.path.join(os.path.dirname(__file__), 'error.txt')
     sg.popup('writing error to:', f_name)
     with open(f_name, 'w') as e_io:
-        s = traceback.format_exception(*args, **kwargs)
+        s = traceback.format_exception(cls, value, tb)
         e_io.writelines(s)
-        print(''.join(s))
+        print(''.join(s), file=sys.stderr)
+        print(f"done writing error to {f_name}")
+    try:
+        reporter.error(cls, value, tb)
+    except Exception:
+        pass
+
 
 sys.excepthook = exc
-if is_nuitka:
-    name = os.path.dirname(sys.argv[0])
-    sg.popup(name)
-
-    raise RuntimeError()
 #
 num_items_to_show = 4
 input_width = 20
@@ -102,7 +96,14 @@ class Graphic:
                     [sg.Tab('search results', search_results_layout, key='-search-results-master-', visible=False)],
                     [sg.Tab('answer', answer_layout, key='-answer-master-', visible=False)]
                 ], key='-master-')
-            ]]
+            ],
+                [sg.T("found bug? you have idea to new feature? click here to open issue !", enable_events=True,
+                      font="Courier-New 12 underline", key="-open-issue-"), ],
+
+                [sg.T("if you enjoy from this free software,it would be great if you could buy me a coffee:",
+                      font='Courier-New 12'),
+                 sg.B(image_data=sg.ICON_BUY_ME_A_COFFEE, key="-buy-me-coffee-")]
+            ]
         pb_window.write_event_value("$done", layout)
 
     def loading_screen(self):
@@ -142,6 +143,8 @@ class Graphic:
         self.choices = list(self.data.keys())
 
     def main(self):
+        check_for_howdoi_update()
+
         layout = self.loading_screen()
         window = sg.Window('CodeSnippets', layout, finalize=True, resizable=True, font=('Helvetica', 16))
         # setup:
@@ -272,14 +275,16 @@ class Graphic:
                     window['-search-results-'].update([self.choices], visible=True)
 
                 window['-search-results-master-'].update(visible=True).select()
+            elif event == '-open-issue-':
+                window.disappear()
+                reporter.open_github_issue()
+                window.reappear()
+            elif event == "-buy-me-coffee-":
+                webbrowser.open('https://www.buymeacoffee.com/matanh')
             else:
                 print("unknown event:", event)
 
 
 if __name__ == '__main__':
-    import multiprocessing
-
-    multiprocessing.freeze_support()
-    # main()
     graphic = Graphic()
     graphic.main()
