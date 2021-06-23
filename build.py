@@ -3,8 +3,10 @@ import subprocess
 import sys
 import time
 import logging
+import platform
 
-sys.excepthook = lambda *args:logging.exception("Uncaught exception",exc_info=args)
+platform = platform.system()
+sys.excepthook = lambda *args: logging.exception("Uncaught exception", exc_info=args)
 
 
 def error(msg, *args, exc_info=True, **kwargs):
@@ -17,7 +19,10 @@ def error(msg, *args, exc_info=True, **kwargs):
 ############
 
 file = 'main.py'
-exe_file = 'snippets.exe'
+if platform == "Windows":
+    exe_file = 'snippets.exe'
+else:
+    exe_file = "snippets.bin"
 add = lambda s, l: list(map(lambda x: s + x, l))
 
 
@@ -28,6 +33,7 @@ def run(*args):
 
 def compile_exe(debug=False):
     plugins = ['multiprocessing', 'tk-inter', 'pylint-warnings']
+
     options = [
         # one file,standalone:
         'onefile',
@@ -36,7 +42,9 @@ def compile_exe(debug=False):
         # without console
         'windows-disable-console' if not debug else None,
         # Removes the build directory after producing
-        'remove-output'
+        'remove-output',
+        'windows-icon-from-ico=icon.ico',
+        'linux-onefile-icon=icon.ico'
         # todo:set icon with --windows-icon-from-ico and --linux-onefile-icon)
     ]
     options = list(filter(None, options))
@@ -67,9 +75,9 @@ def valid():
 
 
 if __name__ == '__main__':
-    a =  sys.argv[1:]
+    a = sys.argv[1:]
     if a:
-        if a[0].lower().strip()=="debug":
+        if a[0].lower().strip() == "debug":
             valid()
 
     if compile_exe() != 0:

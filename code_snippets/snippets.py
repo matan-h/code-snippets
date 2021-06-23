@@ -11,7 +11,7 @@ from . import reporter
 from . import datalib
 from .util import howdoi, check_for_howdoi_update
 import sys
-
+sg.set_global_icon("icon.ico")
 
 def exc(cls, value, tb):
     if issubclass(cls, KeyboardInterrupt):  # Ignore Ctrl + C.
@@ -146,7 +146,7 @@ class Graphic:
         check_for_howdoi_update()
 
         layout = self.loading_screen()
-        window = sg.Window('CodeSnippets', layout, finalize=True, resizable=True, font=('Helvetica', 16))
+        window = sg.Window('CodeSnippets', layout, finalize=True, resizable=True, font=('Helvetica', 16),)
         # setup:
         expand_elements = ['-master-', '-answer-', '-search-results-']
         for element in expand_elements:

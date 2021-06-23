@@ -8,7 +8,6 @@ import webbrowser
 import PySimpleGUI as sg
 from .version import __version__
 import howdoi
-
 base_url = "https://github.com/matan-h/code-snippets"
 issues_url = "{}/issues/new?".format(base_url)
 
@@ -87,7 +86,7 @@ def github_issue_post_validate(values, issue_types):
             break
     #
     if issue_type is None:
-        sg.popup_error('Must choose issue type')
+        sg.popup_error('Must choose issue type',)
         return False
 
     title: str = values['-title-'].strip()
