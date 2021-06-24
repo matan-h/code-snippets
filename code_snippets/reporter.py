@@ -1,13 +1,15 @@
 # based on PySimpleGUI.main_open_github_issue
-# todo: add a button to post github issue
 import platform
 import traceback
 import urllib.parse
 import webbrowser
+from typing import List
 
 import PySimpleGUI as sg
-from .version import __version__
 import howdoi
+
+from .version import __version__
+
 base_url = "https://github.com/matan-h/code-snippets"
 issues_url = "{}/issues/new?".format(base_url)
 
@@ -43,7 +45,17 @@ issue_types = (
 )
 
 
-def make_markdown(issue_type, detailed_description):
+def make_markdown(issue_type: str, detailed_description):
+    """
+    make markdown from issue_type and detailed_description
+
+    Args:
+        issue_type: one of the `issue_types` or Error
+        detailed_description: description of the issue
+
+    Returns:issue markdown string
+
+    """
     return body.format(
         issue_type=issue_type,
         platform=platform.platform(),
@@ -56,7 +68,12 @@ def make_markdown(issue_type, detailed_description):
     )
 
 
-def build_layout():
+def build_layout() -> List[list]:
+    """
+    build the window layout
+    Returns: list[list] of the layout
+
+    """
     frame_types = [[sg.Radio(t, 1, size=(10, 1), enable_events=True, key=t)] for t in issue_types]
     frame_details = [[sg.Multiline(size=(65, 10), font='Courier 10', k='-details-')]]
     #######
@@ -78,7 +95,16 @@ def build_layout():
     return layout
 
 
-def github_issue_post_validate(values, issue_types):
+def github_issue_post_validate(values) -> bool:
+    """
+    check if github issue us valid.
+
+    Args:
+        values: sg.window value
+
+    Returns:True if valid,else False
+
+    """
     issue_type = None
     for itype in issue_types:
         if values[itype]:
@@ -86,14 +112,14 @@ def github_issue_post_validate(values, issue_types):
             break
     #
     if issue_type is None:
-        sg.popup_error('Must choose issue type',)
+        sg.popup_error('Must choose issue type', )
         return False
 
     title: str = values['-title-'].strip()
     if len(title) == 0:
         sg.popup_error("Title can't be blank")
         return False
-    elif title.startswith("[") and title.endswith("]"):
+    if title.startswith("[") and title.endswith("]"):
         sg.popup_error("Title can't be only tag")
         return False
 
@@ -105,6 +131,15 @@ def github_issue_post_validate(values, issue_types):
 
 
 def post_issue(issue_type, title, details):
+    """
+    open web url to issue
+
+    Args:
+        issue_type: one of the issue_types or Error
+        title: title of the issue
+        details:details for the issue
+
+    """
     markdown = make_markdown(issue_type, details)
 
     # Fix body cuz urllib can't do it.
@@ -115,16 +150,25 @@ def post_issue(issue_type, title, details):
 
 
 def error(cls, value, tb):
+    """
+    ask the user for issue reporting. if user press Yes,post the issue
+
+    arguments are from sys.excepthook
+    """
+
     if sg.popup_yes_no(
             f"an error has occurred: {cls.__name__}\n"
             "do you want to report the error to github issues?\n"
             "the program processed all automatically, and you only need to push the Submit button.",
             title="an error has occurred") == "Yes":
         trace = "".join(traceback.format_exception(cls, value, tb))
-        post_issue("Error",f"[Error] {cls.__name__}",f"traceback:\n```pytb\n{trace}\n```")
+        post_issue("Error", f"[Error] {cls.__name__}", f"traceback:\n```pytb\n{trace}\n```")
 
 
 def open_github_issue():
+    """
+    open window for open issue with title,details and type inputs
+    """
     layout = build_layout()
     window = sg.Window('Open A GitHub Issue', layout, finalize=True, resizable=True)
 
@@ -149,7 +193,7 @@ def open_github_issue():
                     issue_type = itype
                     break
 
-            if not github_issue_post_validate(values, issue_types):
+            if not github_issue_post_validate(values):
                 continue
 
             post_issue(issue_type, values["-title-"], values["-details-"])

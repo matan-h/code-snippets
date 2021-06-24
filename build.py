@@ -10,6 +10,7 @@ sys.excepthook = lambda *args: logging.exception("Uncaught exception", exc_info=
 
 
 def error(msg, *args, exc_info=True, **kwargs):
+    """logging.exception(error) and then exit"""
     if exc_info and not (sys.exc_info()):
         exc_info = False
     logging.exception(msg, *args, exc_info, **kwargs)

@@ -3,17 +3,26 @@ import threading
 import traceback
 import webbrowser
 import os.path
+from typing import List
+import difflib
+import sys
+
 import PySimpleGUI as sg
 from howdoi.howdoi import SUPPORTED_SEARCH_ENGINES
 
-import difflib
 from . import reporter
 from . import datalib
 from .util import howdoi, check_for_howdoi_update
-import sys
+
 sg.set_global_icon("icon.ico")
 
+
 def exc(cls, value, tb):
+    """
+    sys.excepthook for write the error to error.txt
+    and then ask the user for report.
+    arguments are from sys.excepthook
+    """
     if issubclass(cls, KeyboardInterrupt):  # Ignore Ctrl + C.
         sys.__excepthook__(cls, value, tb)
         return
@@ -27,7 +36,7 @@ def exc(cls, value, tb):
     try:
         reporter.error(cls, value, tb)
     except Exception:
-        pass
+        return
 
 
 sys.excepthook = exc
@@ -40,13 +49,23 @@ sg.theme_input_background_color('#2b7088')
 
 
 class Graphic:
+    """
+    Grafic object for create gui
+    """
+
     # noinspection PyTypeChecker
     def __init__(self):
         self.window: sg.Window = None
         self.choices = None
         self.data: dict = None
 
-    def build_layout(self, pb_window):
+    def build_layout(self, pb_window: sg.Window):
+        """
+        build window layout async
+        Args:
+            pb_window: sg.Window for write_event_value
+
+        """
         index = [0]
         tasks = ["get data ...", "building search layout ...", "building search results layout ...",
                  "building answer layout ...",
@@ -54,6 +73,7 @@ class Graphic:
 
         @contextlib.contextmanager
         def write_case():
+            """write $start {task_name} update index and then write $pb {index} {len_of_tasks }"""
             pb_window.write_event_value("$start", tasks[index[0]])
             yield
             index[0] += 1
@@ -106,7 +126,12 @@ class Graphic:
             ]
         pb_window.write_event_value("$done", layout)
 
-    def loading_screen(self):
+    def loading_screen(self) -> List[list]:
+        """
+        show loading screen while build_layout() is run
+        Returns: layout
+
+        """
         layout = [
             [sg.T("loading ..." + " " * 50, key="-t-")],
             [sg.ProgressBar(1, orientation='h', size=(20, 20), key='-pb-')]
@@ -124,7 +149,7 @@ class Graphic:
                     ex = True
                 if ex:
                     window.close()
-                    exit("user exit while loading")
+                    sys.exit("user exit while loading")
 
             if event == "$start":
                 window["-t-"].update(values["$start"])
@@ -138,15 +163,19 @@ class Graphic:
                 return values["$done"]
 
     def update_data(self, data):
+        """update data,write data and update choices"""
         self.data.update(data)
         datalib.write_data(self.data)
         self.choices = list(self.data.keys())
 
     def main(self):
+        """
+        start the gui
+        """
         check_for_howdoi_update()
 
         layout = self.loading_screen()
-        window = sg.Window('CodeSnippets', layout, finalize=True, resizable=True, font=('Helvetica', 16),)
+        window = sg.Window('CodeSnippets', layout, finalize=True, resizable=True, font=('Helvetica', 16), )
         # setup:
         expand_elements = ['-master-', '-answer-', '-search-results-']
         for element in expand_elements:
@@ -161,12 +190,11 @@ class Graphic:
             if event == sg.WINDOW_CLOSED:
                 break
 
-            elif event == '-inp-':
+            if event == '-inp-':
                 text = values['-inp-'].lower()
                 if text == input_text:
                     continue
-                else:
-                    input_text = text
+                input_text = text
                 # correct_choices = [c for c in choices if c.lower().startswith(text)]
                 correct_choices = difflib.get_close_matches(text, self.choices)
                 if not correct_choices:
@@ -210,13 +238,12 @@ class Graphic:
                         if 'error' in q:
                             sg.popup(q['error'])
                             continue
-                        else:
-                            answers_links = dict(
-                                map(lambda x: (x[0], x[1]['answer']), q))
-                            answers_links_full = dict(
-                                map(lambda x: (x[0], x[1]['link'],), q))
 
-                            # q = list(map(lambda x: x[1], q))
+                        answers_links = dict(
+                            map(lambda x: (x[0], x[1]['answer']), q))
+                        answers_links_full = dict(
+                            map(lambda x: (x[0], x[1]['link'],), q))
+
                     else:
                         q = howdoi(text, values["-num_answers-"], values["-search_engine-"],
                                    values["-all_answer-bool-"])
@@ -224,12 +251,12 @@ class Graphic:
                         if 'error' in q:
                             sg.popup(q['error'])
                             continue
-                        else:
-                            basename = lambda x: os.path.basename(x) if x is not None else ''
-                            answers_links = dict(
-                                map(lambda x: (basename(x['link']).replace('-', ' '), x['answer']), q))
-                            answers_links_full = dict(
-                                map(lambda x: (basename(x['link']).replace('-', ' '), x['link'],), q))
+
+                        basename = lambda x: os.path.basename(x) if x is not None else ''
+                        answers_links = dict(
+                            map(lambda x: (basename(x['link']).replace('-', ' '), x['answer']), q))
+                        answers_links_full = dict(
+                            map(lambda x: (basename(x['link']).replace('-', ' '), x['link'],), q))
 
                     # all
                     search_results = list(answers_links.keys())

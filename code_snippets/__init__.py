@@ -1,4 +1,3 @@
-# empty
 from . import snippets
 from .version import __version__
 __author__ = "matan-h"
