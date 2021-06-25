@@ -42,7 +42,7 @@ jobs:
 
       - name : Release
         uses: ncipollo/release-action@v1
-        env:
+        with:
           token: ${{ secrets.GITHUB_TOKEN }}
           draft: true
           artifacts : "dist/*"
