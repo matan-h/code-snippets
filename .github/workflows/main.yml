@@ -26,14 +26,16 @@ jobs:
         uses: actions/setup-python@v2.2.2
         with:
           python-version: '3.x'
-      - name: Install howdoi,PySimpleGUI, outdated and nuitka
-        run : pip install howdoi PySimpleGUI outdated nuitka -U
+      - name: Install dependencies
+        run : pip install -r requirements.txt
 
       - name: run build.py
         run : python build.py
 
       - name : Release
         uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

@@ -1,0 +1,6 @@
+PySimpleGUI
+howdoi
+pyinstaller
+outdated
+
+https://github.com/pyinstaller/pyinstaller/archive/develop.zip
