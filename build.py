@@ -30,7 +30,7 @@ def compile_exe(debug=False):
         "--windowed" if not debug else '',
         "--icon icon.ico",
         "--name snippets",
-        "--add-data icon.ico;.",
+        "--add-data icon.ico:.",
         "main.py"
     )
 
@@ -50,6 +50,7 @@ if __name__ == '__main__':
     a = sys.argv[1:]
     if a:
         if a[0].lower().strip() == "debug":
+            print("start debug")
             valid()
 
     compile_exe()
