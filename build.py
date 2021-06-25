@@ -13,7 +13,7 @@ if platform == "Windows":
 elif platform == "Darwin":
     ext = ".app"
 else:
-    ext = ".bin"
+    ext = ""
 
 exe_file = os.path.join("dist", "snippets") + ext
 
@@ -32,7 +32,7 @@ def compile_exe(debug=False):
         "--windowed" if not debug else '',
         "--icon icon.ico",
         "--name snippets",
-        "--add-data icon.ico:.",
+        "--add-data icon.ico"+d+".",
         "main.py"
     )
 
