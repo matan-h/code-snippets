@@ -44,7 +44,8 @@ jobs:
         uses: ncipollo/release-action@v1
         env:
           token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts : "dist/*"
+          draft: true
+          # artifacts : "dist/*"
 
 
 
