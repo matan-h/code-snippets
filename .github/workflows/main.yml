@@ -45,7 +45,8 @@ jobs:
         env:
           token: ${{ secrets.GITHUB_TOKEN }}
           draft: true
-          # artifacts : "dist/*"
+          artifacts : "dist/*"
+          tag : "latest"
 
 
 
