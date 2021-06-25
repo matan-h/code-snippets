@@ -9,6 +9,12 @@ on:
   workflow_dispatch:
 
 jobs:
+  check-the-ref:
+    runs-on: ubuntu-latest
+    steps:
+      - name: check the ref
+      run : echo ${{github.ref}}
+
   release:
 
     runs-on: ${{ matrix.os }}
