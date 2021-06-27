@@ -42,10 +42,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           draft: true
-          artifacts : "dist/*"
+          files : "dist/*"
+          fail_on_unmatched_files : true
           tag : "latest"
-
-
-
-
-      # - name: Build/release Electron app
