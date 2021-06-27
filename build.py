@@ -72,7 +72,8 @@ if __name__ == '__main__':
 
     else:
         print("exe_file not found...", "here is dir:", os.listdir())
-        if os.path.exists("dist"):
-            print("dir of dist:", os.listdir("dist"))
+
+    if os.path.exists("dist"):
+        print("dir of dist:", os.listdir("dist"))
 
     print("done")
