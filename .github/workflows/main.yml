@@ -11,35 +11,26 @@ on:
 
 jobs:
   release:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     # if: ${{ startsWith('refs/tags/v', github.ref) }}
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest]
 
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v1
 
-      - name : Install python
-        uses: actions/setup-python@v2.2.2
+      - name: Package Application
+        uses: JackMcKew/pyinstaller-action-windows@main
         with:
-          python-version: '3.x'
-      - name: Install dependencies
-        run : pip install -r requirements.txt
-
-      - name: run build.py
-        run : python build.py
+          path : .
 
       - name : Release
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           draft: true
-          artifacts : "dist/*"
+          artifacts : "dist/windows/*"
           tag : "latest"
 
 

@@ -3,4 +3,4 @@ howdoi
 pyinstaller
 outdated
 
-https://github.com/pyinstaller/pyinstaller/archive/develop.zip
+pyinstaller @ https://github.com/pyinstaller/pyinstaller/archive/develop.zip
