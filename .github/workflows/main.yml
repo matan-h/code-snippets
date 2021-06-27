@@ -43,5 +43,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           draft: true
           files : "dist/*"
-          fail_on_unmatched_files : true
           tag : "latest"
