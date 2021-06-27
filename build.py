@@ -24,7 +24,7 @@ def run(*args):
 
 
 def compile_exe(debug=False):
-    d = ";" if os.name == "nt" else ":"  # ; for windows, : in linux and mac
+    d = ";" if os.name == "nt" else ":"  # ; for windows, : in linux
 
     run(
         "pyinstaller",
