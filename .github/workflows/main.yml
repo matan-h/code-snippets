@@ -40,7 +40,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          draft: true
+          draft: false
           files : "dist/*"
-          tag : "latest"
