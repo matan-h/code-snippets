@@ -6,7 +6,6 @@ import subprocess
 import sys
 
 import howdoi.howdoi as howdoi_base
-from outdated import check_outdated
 import PySimpleGUI as sg
 
 
@@ -53,11 +52,26 @@ def howdoi(query: str, num_answers: int = 1, search_engine='duckduckgo', all_ans
     return result
 
 
-def check_for_howdoi_update():
+'''def check_for_howdoi_update():
     """check if this is the last version of howdoi"""
+    from outdated import check_outdated
     is_outdated, latest_version = check_outdated("howdoi", howdoi_base.__version__)
     if is_outdated:
         if sg.popup_ok_cancel(
                 f"do you want to install a new version of howdoi library ({howdoi_base.__version__} -> {latest_version}). the search may don't work on outdated version",
                 title="new version of howdoi") == "OK":
-            subprocess.check_call([sys.executable, "-m", "pip", "install", "-U", "howdoi"])
+            subprocess.check_call([sys.executable, "-m", "pip", "install", "-U", "howdoi"])'''
+
+if getattr(sys, 'frozen', False):
+    application_path = os.path.dirname(sys.executable)
+elif __file__:
+    application_path = os.path.dirname(__file__)
+else:
+    application_path = '.'
+
+
+def get_path(p):
+    ps = os.path.join(application_path, p)
+    if not os.path.exists(ps):
+        ps = os.path.join(os.path.dirname(application_path), p)
+    return ps

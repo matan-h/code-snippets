@@ -12,9 +12,7 @@ from howdoi.howdoi import SUPPORTED_SEARCH_ENGINES
 
 from . import reporter
 from . import datalib
-from .util import howdoi, check_for_howdoi_update
-
-sg.set_global_icon("icon.ico")
+from .util import howdoi, get_path
 
 
 def exc(cls, value, tb):
@@ -39,7 +37,6 @@ def exc(cls, value, tb):
         return
 
 
-sys.excepthook = exc
 #
 num_items_to_show = 4
 input_width = 20
@@ -55,13 +52,20 @@ class Graphic:
 
     # noinspection PyTypeChecker
     def __init__(self):
+        self.init_icon()
+        sys.excepthook = exc
         self.window: sg.Window = None
         self.choices = None
         self.data: dict = None
 
+    @staticmethod
+    def init_icon():
+        sg.set_global_icon(get_path("icon.ico"))
+
     def build_layout(self, pb_window: sg.Window):
         """
         build window layout async
+
         Args:
             pb_window: sg.Window for write_event_value
 
@@ -172,7 +176,7 @@ class Graphic:
         """
         start the gui
         """
-        check_for_howdoi_update()
+        # check_for_howdoi_update()
 
         layout = self.loading_screen()
         window = sg.Window('CodeSnippets', layout, finalize=True, resizable=True, font=('Helvetica', 16), )

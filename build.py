@@ -60,18 +60,11 @@ if __name__ == '__main__':
     if os.path.exists(exe_file):
         print("exe_file:", exe_file)
         if os.path.isdir(exe_file):
-            print("isdir !!!")
+            print("exe_file is dir ")
             print("listdir:",os.listdir(exe_file))
-            ffd = exe_file
-
-            while os.path.isdir(ffd):
-                print(f"listdir of :",ffd,":")
-                l = os.listdir(ffd)
-                if l:
-                    ffd = l[0]
 
     else:
-        print("exe_file not found...", "here is dir:", os.listdir())
+        print("exe file not found...", "here is dir:", os.listdir())
 
     if os.path.exists("dist"):
         print("dir of dist:", os.listdir("dist"))

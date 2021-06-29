@@ -8,7 +8,7 @@ def get_data() -> dict:
     """
     get json from the data file
 
-    Returns: the json data or the {} if no data
+    Returns : the json data or the {} if no data
     """
     if path.exists(data_file):
         return json.load(open(data_file, 'r'))
@@ -19,6 +19,7 @@ def get_data() -> dict:
 def write_data(data) -> None:
     """
     write json data to the data file
+
     Args:
         data: json data
     """
