@@ -70,8 +70,9 @@ else:
     application_path = '.'
 
 
-def get_path(p):
+def get_path(p,exists=True):
     ps = os.path.join(application_path, p)
-    if not os.path.exists(ps):
-        ps = os.path.join(os.path.dirname(application_path), p)
+    if exists:
+        if not os.path.exists(ps):
+            ps = os.path.join(os.path.dirname(application_path), p)
     return ps
