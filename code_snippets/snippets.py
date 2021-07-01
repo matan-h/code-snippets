@@ -24,18 +24,21 @@ def exc(cls, value, tb):
     if issubclass(cls, KeyboardInterrupt):  # Ignore Ctrl + C.
         sys.__excepthook__(cls, value, tb)
         return
-    f_name = get_path('error.txt',exists=False)
+    f_name = get_path('error.txt', exists=False)
+    if not os.access(f_name, os.W_OK):
+        f_name = os.path.expanduser(os.path.join("~","code_snippets-error.txt"))
     sg.popup('writing error to:', f_name)
-
-    with open(f_name, 'w') as e_io:
-        s = traceback.format_exception(cls, value, tb)
-        e_io.writelines(s)
-        print(''.join(s), file=sys.stderr)
-        print(f"done writing error to {f_name}")
     try:
-        reporter.error(cls, value, tb)
-    except Exception:
-        return
+        with open(f_name, 'w') as e_io:
+            s = traceback.format_exception(cls, value, tb)
+            e_io.writelines(s)
+            print(''.join(s), file=sys.stderr)
+            print(f"done writing error to {f_name}")
+    finally:
+        try:
+            reporter.error(cls, value, tb)
+        finally:
+            return
 
 
 #
