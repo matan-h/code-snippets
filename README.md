@@ -32,18 +32,21 @@ you will see:
 you can import the `code_snippets` module:
 ```python
 # import the Graphic class
-from code_snippets.snippets import Graphic # import Graphic class
+from code_snippets.snippets import Graphic  # import Graphic class
+
 # init Graphic - it will init icon,create Graphic object and create hook for open the issue reporter when error occurred
 graphic = Graphic()
-graphic.main() # start the mainloop of the gui
+graphic.main()  # start the mainloop of the gui
 ```
 you can also use only the github issue reporter
 ```python
 # import Graphic class,for init the icon
 from code_snippets.snippets import Graphic
-Graphic.init_icon() # only init the icon,without init the gui
+
+Graphic.init_icon()  # only init the icon,without init the gui
 from code_snippets.reporter import open_github_issue
-open_github_issue() # open the "Open A GitHub Issue" window
+
+open_github_issue()  # open the "Open A GitHub Issue" window
 ```
 
 

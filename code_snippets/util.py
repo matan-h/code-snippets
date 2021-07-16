@@ -76,3 +76,5 @@ def get_path(p,exists=True):
         if not os.path.exists(ps):
             ps = os.path.join(os.path.dirname(application_path), p)
     return ps
+# if os.name=="nt":
+#     data_folder =

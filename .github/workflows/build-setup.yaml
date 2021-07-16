@@ -1,0 +1,40 @@
+ 
+name: Build Inno Setup
+
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    tags:
+      - "*"
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: windows-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v1
+
+      - name : Build Setup
+        run : compil32 /cc setup.iss
+      #  uses: actions/setup-python@v2.2.2
+      #  with:
+      #    python-version: '3.x'
+      #- name: Install dependencies
+      #  run : pip install -r requirements.txt
+
+      #- name: run build.py
+      #  run : python build.py
+
+      - name : Release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        with:
+          draft: false
+          files : "setup/snippets-setup.exe"

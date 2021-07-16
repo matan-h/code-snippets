@@ -37,7 +37,6 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-; Source: "D:\Program Data\Pycharm\PycharmProjects\code_snippets\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{tmp}\{#MyAppExeName}"; DestDir: "{app}"; Flags: external
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
@@ -87,7 +86,20 @@ end;
 
 
 
-
+//////////////////////////////////////////////////////////// 
+ procedure CurUninstallStepChanged (CurUninstallStep: TUninstallStep);
+var
+   mres : integer;
+begin
+  case CurUninstallStep of                   
+    usPostUninstall:
+      begin
+        mres := MsgBox('Do you want to Remove Data (saved answers)?', mbConfirmation, MB_YESNO or MB_DEFBUTTON2)
+        if mres = IDYES then
+          DelTree(ExpandConstant('{userappdata}\codeSnippet'), True, True, True);
+     end;
+ end;
+end; 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 
