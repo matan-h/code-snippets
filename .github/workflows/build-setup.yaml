@@ -21,8 +21,8 @@ jobs:
 
       - name : Build Setup
         env:
-            Inno-setup-path: c:\Program Files\Inno Setup 6\compil32\
-        run : "${Inno-setup-path}" /cc setup.iss
+            Inno-setup-path: "c:\Program Files\Inno Setup 6\compil32"
+        run : %Inno-setup-path% /cc setup.iss
       #  uses: actions/setup-python@v2.2.2
       #  with:
       #    python-version: '3.x'
