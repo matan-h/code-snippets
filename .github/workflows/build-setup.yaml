@@ -18,17 +18,14 @@ jobs:
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v1
+      - name: Install Inno Setup
+        run : curl
 
       - name : Build Setup
         env:
             Compil32: "c:\\Program Files\\Inno Setup 6\\compil32"
-        run : |
-            echo %Compil32%
-            dir "C:/Program Files"
-            dir "C:/Program Files (x86)"
-            dir "C:/Program Files/Inno Setup"
-            "%Compil32%" /cc setup.iss
-        shell: cmd
+        run : python build-setup.py
+        # shell: cmd
       #  uses: actions/setup-python@v2.2.2
       #  with:
       #    python-version: '3.x'
