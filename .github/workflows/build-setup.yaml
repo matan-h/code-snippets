@@ -23,7 +23,7 @@ jobs:
         env:
             Compil32: "c:\\Program Files\\Inno Setup 6\\compil32"
         run : |
-        "%Compil32%" /cc setup.iss
+           "%Compil32%" /cc setup.iss
         shell: cmd
       #  uses: actions/setup-python@v2.2.2
       #  with:
