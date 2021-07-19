@@ -18,8 +18,6 @@ jobs:
     steps:
       - name: Check out Git repository
         uses: actions/checkout@v1
-      - name: Install Inno Setup
-        run : curl
 
       - name : Build Setup
         env:
