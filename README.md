@@ -5,7 +5,7 @@ Then this is for you!
 code-snippets is python program for search instant coding answers and save it fot later use.
 
 ## Binary Install
-windows users can install the program by running the [last setup](https://github.com/matan-h/code-snippets/releases/latest/snippets-setup.exe) (made using  [inno setup](https://jrsoftware.org/isinfo.php))
+windows users can install the program by running the [last setup](https://github.com/matan-h/code-snippets/releases/latest/download/snippets-setup.exe) (made using  [inno setup](https://jrsoftware.org/isinfo.php))
 
 or by download [last snippets.exe](https://github.com/matan-h/code-snippets/releases/latest/download/snippets.exe) from [last Release](https://github.com/matan-h/code-snippets/releases/latest)
 
