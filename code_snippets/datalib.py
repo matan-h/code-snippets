@@ -22,8 +22,12 @@ def get_data() -> dict:
     Returns : the json data or the {} if no data
     """
     if path.exists(data_file):
-        return json.load(open(data_file, 'r'))
-
+        if os.stat(data_file).st_size!=0: #if the file is empty
+            with open(data_file, 'r') as dt:
+                json.load(dt)
+        else:
+            return {}
+        
     return {}
 
 
